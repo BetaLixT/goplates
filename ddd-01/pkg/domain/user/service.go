@@ -15,7 +15,8 @@ func (svc *UserService) CreateUser(
 	providers []ProviderRegistration,
 ) (created User, err error) {
 
-	repo := prov.GetUserRepo()
+	repo := prov.GetUserTransactionalRepo()
+	repo.StartTransaction()
 	// Validations
 	check, err := repo.CheckRolesExist(roles)
 	if err != nil {
@@ -43,5 +44,29 @@ func (svc *UserService) CreateUser(
 		roles,
 		providers,
 	)
+	if err != nil {
+		return
+	}
+	err = repo.Commit()
+	return
+}
+
+func (svc *UserService) GetUser(
+	prov IServiceProvider,
+	id string,
+) (res User, err error) {
+
+	repo := prov.GetUserRepo()
+	res, err = repo.Get(id)
+	return
+}
+
+func (svc *UserService) DeleteUser(
+	prov IServiceProvider,
+	id string,
+) (res User, err error) {
+
+	repo := prov.GetUserRepo()
+	res, err = repo.Delete(id)
 	return
 }

@@ -15,3 +15,9 @@ type IUserRepo interface {
     providerRegistration []ProviderRegistration,
   ) (bool, error)
 }
+
+type IUserTransactionalRepo interface {
+  IUserRepo
+  StartTransaction() error
+  Commit() error
+}
