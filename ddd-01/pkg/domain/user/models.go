@@ -16,6 +16,6 @@ type UserRole struct {
 }
 
 type UserProvider struct {
-	UserRoleId string
-	RoleId     string
+	ProviderId     string
+	ProviderUserId string
 }
