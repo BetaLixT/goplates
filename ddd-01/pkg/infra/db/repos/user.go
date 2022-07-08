@@ -13,7 +13,7 @@ type UserRepo struct {
   ctx *db.DbContext
 }
 
-var _ user.IUserTransactionalRep = (*UserRepo)(nil)
+var _ user.IUserTransactionalRepo = (*UserRepo)(nil)
 
 func (repo *UserRepo) StartTransaction() error {
   return nil
@@ -164,3 +164,34 @@ func (repo *UserRepo) Delete (
 func (repo *UserRepo) Commit() error {
   return nil
 }
+
+func (repo *UserRepo) CheckRolesExist(
+  roles []string,
+) (bool, error) {
+  // just a spike implementation since this is just a test
+  return From(repo.ctx.Roles).Where(func (x interface{}) bool {
+    xc := x.(db.Role)
+    for _, r := range(roles) {
+      if xc.Id == r {
+        return true
+      }
+    }
+    return false
+  }).Count() == len(roles), nil
+}
+
+func (repo *UserRepo) CheckProvderRegistrationUnique(
+  prov []user.ProviderRegistration,
+) (bool, error) {
+  // just a spike implementation since this is just a test
+  return From(repo.ctx.Providers).Where(func (x interface{}) bool {
+    xc := x.(db.Provider)
+    for _, r := range(prov) {
+      if xc.Id == r.ProviderId {
+        return true
+      }
+    }
+    return false
+  }).Count() == len(prov), nil
+}
+
