@@ -2,6 +2,6 @@ package provider
 
 type Provider struct {
 	Id          string
-	title       string
-	description string
+	Title       string
+	Description string
 }
