@@ -1,7 +1,6 @@
 package repos
 
 import (
-	"ddd-01/pkg/domain/provider"
 	"ddd-01/pkg/domain/user"
 	"ddd-01/pkg/infra/db"
 	"fmt"
@@ -25,12 +24,54 @@ func (repo *UserRepo) Create (
   name string,
   image string,
   roles []string,
-  providers []string,
-) {
-  id := uuid.Must(uuid.NewV4())
-  repo.ctx.Users[id.String()] = db.User{
-
+  providers []user.ProviderRegistration,
+) (user.User, error) {
+  id := uuid.NewV4().String()
+  
+  repo.ctx.Users[id] = db.User{
+    Id: id,
+    DisplayName: name,
+    Email: email,
+    Image: image,
   }
+
+  droles := []user.UserRole{}
+  for _, v := range(roles) {
+    rid := uuid.NewV4().String()
+    repo.ctx.UserRoles[rid] = db.UserRole{
+      Id: rid,
+      RoleId: v,
+      UserId: id,
+    }
+    droles = append(droles, user.UserRole{
+      RoleId: v,
+      UserRoleId: rid,
+    })
+  }
+
+  dprov := []user.UserProvider{}
+  for _, v := range(providers) {
+    pid := uuid.NewV4().String()
+    repo.ctx.UserProviders[pid] = db.UserProvider{
+      Id: pid,
+      ProviderId: v.ProviderId,
+      ProviderUserId: v.ProviderUserId,
+      UserId: id,
+    }
+    dprov = append(dprov, user.UserProvider{
+      UserProviderId: pid,
+      ProviderId: v.ProviderId,
+      ProviderUserId: v.ProviderUserId, 
+    })
+  }
+  return user.User{
+      Id: id,
+      DisplayName: name,
+      Email: &email,
+      Image: &image,
+      Roles: droles,
+      Providers: dprov,
+    }, nil
 }
 
 func (repo *UserRepo) Get (

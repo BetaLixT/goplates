@@ -8,9 +8,9 @@ type User struct {
 }
 
 type Role struct {
-  Id string
-  title string
-  Description string
+	Id          string
+	title       string
+	Description string
 }
 
 type UserRole struct {
@@ -19,8 +19,15 @@ type UserRole struct {
 	RoleId string
 }
 
+type Provider struct {
+	Id          string
+	Title       string
+	Description string
+}
+
 type UserProvider struct {
-	Id         string
-	UserId     string
-	ProviderId string
+	Id             string
+	UserId         string
+	ProviderId     string
+	ProviderUserId string
 }
