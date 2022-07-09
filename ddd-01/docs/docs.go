@@ -16,7 +16,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/": {
+        "/api/v1/roles/": {
             "post": {
                 "description": "create role",
                 "consumes": [
@@ -29,6 +29,17 @@ const docTemplate = `{
                     "role"
                 ],
                 "summary": "create role",
+                "parameters": [
+                    {
+                        "description": "The input todo struct",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.CreateRole"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -41,6 +52,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "req.CreateRole": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "res.Role": {
             "type": "object",
             "properties": {

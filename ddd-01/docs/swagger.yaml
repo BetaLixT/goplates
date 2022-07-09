@@ -1,4 +1,13 @@
 definitions:
+  req.CreateRole:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+    type: object
   res.Role:
     properties:
       description:
@@ -11,11 +20,18 @@ definitions:
 info:
   contact: {}
 paths:
-  /:
+  /api/v1/roles/:
     post:
       consumes:
       - application/json
       description: create role
+      parameters:
+      - description: The input todo struct
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/req.CreateRole'
       produces:
       - application/json
       responses:

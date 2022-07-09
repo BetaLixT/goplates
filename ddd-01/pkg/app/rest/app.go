@@ -95,6 +95,9 @@ func startService(
  
  v1g := router.Group("api/v1")
  v1role.RegisterRoutes(v1g.Group("roles"))
+ router.NoRoute(func(ctx *gin.Context) {
+	ctx.JSON(404, "Not Found")
+ })
 
  router.Run(":8080")
 }
