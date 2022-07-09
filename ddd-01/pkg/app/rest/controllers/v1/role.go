@@ -12,6 +12,17 @@ type RoleController struct {
   svc *role.RoleService
 }
 
+// @BasePath /api/v1/roles
+
+// CreateRole godoc
+// @Summary create role 
+// @Schemes
+// @Description create role 
+// @Tags role
+// @Accept json
+// @Produce json
+// @Success 201 {object} res.Role{}
+// @Router / [post]
 func (ctrl *RoleController) createRole(ctx *gin.Context) {
   sp := ctx.MustGet("tx-context").(role.IServiceProvider)
   rbody := req.CreateRole{}

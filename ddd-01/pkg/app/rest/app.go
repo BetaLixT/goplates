@@ -14,6 +14,8 @@ import (
 	"github.com/soreing/trex"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/files"
 )
 
 func Start() {
@@ -44,6 +46,8 @@ func startService(
   // gin.SetMode(gin.ReleaseMode)
   router.SetTrustedProxies(nil)
 
+	// - Swagger
+	
   // - Setting up middlewares
   router.Use(gingorr.RootRecoveryMiddleware(lgr))
   router.Use(trex.TxContextMiddleware(provFactory))
@@ -58,10 +62,28 @@ func startService(
     bytes int,
     start,
     end time.Time) {
-
+      sp := context.(*serviceprovider.ServiceProvider)
+      latency := end.Sub(start)
+      sp.GetLogger().Info(
+				"Request",
+				zap.Int("status", status),
+				zap.String("method", method),
+				zap.String("path", path),
+				zap.String("query", query),	
+				zap.String("ip", ip),
+				zap.String("userAgent", agent),
+				zap.Time("mvts", end),
+				zap.String("pmvts", end.Format("2006-01-02T15:04:05-0700")),
+				zap.Duration("latency", latency),
+				zap.String("pLatency", latency.String()),
+			)
    },
- ))
+ )) 
  router.Use(gingorr.RecoveryMiddleware("tx-context", lgr))
+ router.GET(
+ 	 "/swagger/*any",
+ 	 ginSwagger.WrapHandler(swaggerFiles.Handler),
+ )
  router.Use(gingorr.ErrorHandlerMiddleware("tx-context"))
 
  // - Setting up routes
@@ -70,8 +92,9 @@ func startService(
      "status": "alive",
    })
  })
- v1g := router.Group("v1")
- v1role.RegisterRoutes(v1g.Group("role"))
+ 
+ v1g := router.Group("api/v1")
+ v1role.RegisterRoutes(v1g.Group("roles"))
 
  router.Run(":8080")
 }

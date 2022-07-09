@@ -1,0 +1,29 @@
+definitions:
+  res.Role:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /:
+    post:
+      consumes:
+      - application/json
+      description: create role
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/res.Role'
+      summary: create role
+      tags:
+      - role
+swagger: "2.0"
