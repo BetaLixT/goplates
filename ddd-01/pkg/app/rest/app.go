@@ -15,13 +15,14 @@ func Start() {
   app := fx.New(
     fx.Provide(db.NewDbContext),
     fx.Provide(serviceprovider.NewServiceProviderFactory),
+    fx.Invoke(startService),
   )
   app.Run()
 
   // Invoke cleanups
 }
 
-func StartService(
+func startService(
   provFactory *serviceprovider.ServiceProviderFactory,
 ) {
   router := gin.New()
@@ -52,5 +53,5 @@ func StartService(
    })
  })
 
- router.Run()
+ router.Run(":8080")
 }
