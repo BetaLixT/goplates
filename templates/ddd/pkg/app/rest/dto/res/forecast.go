@@ -22,7 +22,9 @@ func MapForecastToDetailedDto(r forecast.Forecast) ForecastDetailed {
 	}
 }
 
-func MapForecastToDetailedSliceDto(r []forecast.Forecast) ( res []ForecastDetailed) {
+func MapForecastToDetailedSliceDto(
+	r []forecast.Forecast,
+) ( res []ForecastDetailed) {
 	res = make([]ForecastDetailed, len(r))
 	for idx, v := range(r) {
 		res[idx] = MapForecastToDetailedDto(v)

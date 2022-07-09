@@ -91,3 +91,19 @@ is based on my limited understanding on Aggrigates in DDD,
  more complex domain is present in the
  [sample](https://github.com/BetaLixT/goplates/tree/dev/samples/ddd-01)
  project mentioned above
+
+##### infra
+This package would contain the actual implementation of the above mentioned
+data sources amongst other things. For example database connections and
+queries, clients for external applications etc would be part of this package.
+This package would also implement the ServiceProvider mentioned above, the
+template includes a ServiceProviderFactory since this is a requirement for
+the middleware that generates the ServiceProvider. In addition to that, other
+utilities like logging, tracing, configuration etc are to be defined here
+
+##### app
+This package would contain the different front ends for the application, this
+template is for a webapi application and hence contains a rest app provided
+with controllers and middlewares setup, this package would tie together the
+infra and the domain and call the services in the domain with the dependencies
+provided

@@ -4,7 +4,7 @@ type ForecastService struct {
 
 }
 
-func (svc *ForecastService) ListForcasts(
+func (svc *ForecastService) ListForecasts(
   prov IServiceProvider,
 ) []Forecast {
   return prov.GetForecastRepo().List()
