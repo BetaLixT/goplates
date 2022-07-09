@@ -16,3 +16,9 @@ func (spfac *ServiceProviderFactory) Generate(
 ) (interface{}, error) {
   return NewServiceProvider(spfac.dbctx), nil
 }
+
+func NewServiceProviderFactory(dbctx *db.DbContext) *ServiceProviderFactory {
+  return &ServiceProviderFactory{
+    dbctx: dbctx,
+  }
+}
