@@ -9,7 +9,7 @@ type User struct {
 
 type Role struct {
 	Id          string
-	title       string
+	Title       string
 	Description string
 }
 
