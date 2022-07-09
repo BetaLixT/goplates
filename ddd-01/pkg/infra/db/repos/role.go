@@ -64,3 +64,9 @@ func (repo *RoleRepo) Delete (
     Description: val.Description,
   }, nil
 }
+
+func NewRoleRepo (ctx *db.DbContext) *RoleRepo {
+	return &RoleRepo{
+		ctx: ctx,
+	}
+}

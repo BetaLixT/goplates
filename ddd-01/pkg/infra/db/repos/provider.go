@@ -64,3 +64,9 @@ func (repo *ProviderRepo) Delete (
     Description: val.Description,
   }, nil
 }
+
+func NewProviderRepo (ctx *db.DbContext) *ProviderRepo {
+	return &ProviderRepo{
+		ctx: ctx,
+	}
+}

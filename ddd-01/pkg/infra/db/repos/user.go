@@ -195,3 +195,8 @@ func (repo *UserRepo) CheckProvderRegistrationUnique(
   }).Count() == len(prov), nil
 }
 
+func NewUserRepo (ctx *db.DbContext) *UserRepo {
+	return &UserRepo{
+		ctx: ctx,
+	}
+}
