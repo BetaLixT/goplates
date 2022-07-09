@@ -37,3 +37,7 @@ func (svc *RoleService) DeleteRole (
   )
   return
 }
+
+func NewRoleService() *RoleService {
+	return &RoleService{}
+}

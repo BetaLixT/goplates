@@ -70,3 +70,7 @@ func (svc *UserService) DeleteUser(
 	res, err = repo.Delete(id)
 	return
 }
+
+func NewUserService() *UserService {
+	return &UserService{}
+}

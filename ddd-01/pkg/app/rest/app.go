@@ -1,6 +1,9 @@
 package rest
 
 import (
+	v1 "ddd-01/pkg/app/rest/controllers/v1"
+	"ddd-01/pkg/domain/role"
+	"ddd-01/pkg/domain/user"
 	"ddd-01/pkg/infra/db"
 	"ddd-01/pkg/infra/logger"
 	"ddd-01/pkg/infra/serviceProvider"
@@ -19,6 +22,9 @@ func Start() {
     fx.Provide(db.NewDbContext),
     fx.Provide(logger.NewLogger),
     fx.Provide(serviceprovider.NewServiceProviderFactory),
+    fx.Provide(user.NewUserService),
+    fx.Provide(role.NewRoleService),
+    fx.Provide(v1.NewRoleController),
     fx.Invoke(startService),
   )
   app.Run()
@@ -29,12 +35,13 @@ func Start() {
 func startService(
   provFactory *serviceprovider.ServiceProviderFactory,
   lgr *zap.Logger,
+  v1role *v1.RoleController,
 ) {
 
 	// - Setting up logger
 	
   router := gin.New()
-  gin.SetMode(gin.ReleaseMode)
+  // gin.SetMode(gin.ReleaseMode)
   router.SetTrustedProxies(nil)
 
   // - Setting up middlewares
@@ -63,6 +70,8 @@ func startService(
      "status": "alive",
    })
  })
+ v1g := router.Group("v1")
+ v1role.RegisterRoutes(v1g.Group("role"))
 
  router.Run(":8080")
 }
