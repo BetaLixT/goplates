@@ -1,0 +1,33 @@
+definitions:
+  res.ForecastDetailed:
+    properties:
+      date:
+        type: string
+      summary:
+        type: string
+      temperatureC:
+        type: integer
+      temperatureF:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/forecasts/:
+    get:
+      consumes:
+      - application/json
+      description: List forecasts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/res.ForecastDetailed'
+            type: array
+      summary: List forecasts
+      tags:
+      - role
+swagger: "2.0"

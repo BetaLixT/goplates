@@ -1,0 +1,53 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/v1/forecasts/": {
+            "get": {
+                "description": "List forecasts",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "role"
+                ],
+                "summary": "List forecasts",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/res.ForecastDetailed"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "res.ForecastDetailed": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "temperatureC": {
+                    "type": "integer"
+                },
+                "temperatureF": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
