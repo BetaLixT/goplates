@@ -10,6 +10,7 @@ import (
 
 
 // Handles transient and scoped dependencies
+// Should be created for each incoming request
 type ServiceProvider struct {
   dbctx *db.DbContext
 }
