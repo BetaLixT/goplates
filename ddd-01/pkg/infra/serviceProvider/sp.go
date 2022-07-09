@@ -8,6 +8,8 @@ import (
 	"ddd-01/pkg/infra/db/repos"
 )
 
+
+// Handles transient and scoped dependencies
 type ServiceProvider struct {
   dbctx *db.DbContext
 }
@@ -20,6 +22,7 @@ func (prov *ServiceProvider) GetUserRepo() user.IUserRepo {
   return repos.NewUserRepo(prov.dbctx)
 }
 
+// Transient services
 func (prov *ServiceProvider) GetUserTransactionalRepo(
 ) user.IUserTransactionalRepo {
   return repos.NewUserRepo(prov.dbctx)
@@ -35,6 +38,7 @@ func (prov *ServiceProvider) GetProviderRepo(
   return repos.NewProviderRepo(prov.dbctx)
 }
 
+// Construcutor
 func NewServiceProvider(db *db.DbContext) *ServiceProvider {
   return &ServiceProvider{
     dbctx: db,
