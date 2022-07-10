@@ -3,6 +3,8 @@ package rest
 import (
 	v1 "ddd/pkg/app/rest/controllers/v1"
 	"ddd/pkg/domain/forecast"
+	"ddd/pkg/infra/config"
+	"ddd/pkg/infra/insights"
 	"ddd/pkg/infra/logger"
 	serviceprovider "ddd/pkg/infra/serviceProvider"
 	"time"
@@ -20,6 +22,8 @@ func Start() {
 	// Registering singletons
 	app := fx.New(
 		fx.Provide(logger.NewLogger),
+		fx.Provide(config.NewInsightsConfig),
+		fx.Provide(insights.NewInsightsCore),
 		fx.Provide(serviceprovider.NewServiceProviderFactory),
 		fx.Provide(forecast.NewForecastService),
 		fx.Provide(v1.NewForecastController),
@@ -60,6 +64,21 @@ func startService(
 		end time.Time) {
 		sp := context.(*serviceprovider.ServiceProvider)
 		latency := end.Sub(start)
+		
+		sp.GetTracer().TraceRequest(
+			// this true is being ignored :)
+			true,
+			method,
+			path,
+			query,
+			status,
+			bytes,
+			ip,
+			agent,
+			start,
+			end,
+		  map[string]string{},
+		)
 		sp.GetLogger().Info(
 			"Request",
 			zap.Int("status", status),
