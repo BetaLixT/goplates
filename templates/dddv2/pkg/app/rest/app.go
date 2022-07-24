@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	v1 "ddd/pkg/app/rest/controllers/v1"
 	"ddd/pkg/domain"
 	"ddd/pkg/infra"
@@ -23,7 +24,8 @@ var dependencySet = wire.NewSet(
 )
 
 func Start() {
-	app, err := InitializeApp(); if err != nil {
+	app, err := InitializeApp()
+	if err != nil {
 		panic(err)
 	}
 	app.startService()
@@ -39,7 +41,7 @@ func NewApp(
 	v1fcast *v1.ForecastController,
 ) *app {
 	return &app{
-		lgr: lgr,
+		lgr:     lgr,
 		v1fcast: v1fcast,
 	}
 }
@@ -57,49 +59,7 @@ func (a *app) startService() {
 	// - Setting up middlewares
 	router.Use(gingorr.RootRecoveryMiddleware(a.lgr))
 	// router.Use(trex.TxContextMiddleware(provFactory))
-	router.Use(trex.RequestTracerMiddleware(func(
-		context interface{},
-		method,
-		path,
-		query,
-		agent,
-		ip string,
-		status,
-		bytes int,
-		start,
-		end time.Time) {
-		// sp := context.(*serviceprovider.ServiceProvider)
-		// latency := end.Sub(start)
-		//
-		// sp.GetTracer().TraceRequest(
-		// 	// this true is being ignored :)
-		// 	true,
-		// 	method,
-		// 	path,
-		// 	query,
-		// 	status,
-		// 	bytes,
-		// 	ip,
-		// 	agent,
-		// 	start,
-		// 	end,
-		// 	map[string]string{},
-		// )
-		// sp.GetLogger().Info(
-		// 	"Request",
-		// 	zap.Int("status", status),
-		// 	zap.String("method", method),
-		// 	zap.String("path", path),
-		// 	zap.String("query", query),
-		// 	zap.String("ip", ip),
-		// 	zap.String("userAgent", agent),
-		// 	zap.Time("mvts", end),
-		// 	zap.String("pmvts", end.Format("2006-01-02T15:04:05-0700")),
-		// 	zap.Duration("latency", latency),
-		// 	zap.String("pLatency", latency.String()),
-		// )
-	},
-	))
+	router.Use(trex.RequestTracerMiddleware(traceRequest))
 	router.Use(gingorr.RecoveryMiddleware("tx-context", a.lgr))
 	router.GET(
 		"/swagger/*any",
@@ -121,4 +81,46 @@ func (a *app) startService() {
 	})
 
 	router.Run(":8080")
+}
+
+func traceRequest(
+	context context.Context,
+	method,
+	path,
+	query,
+	agent,
+	ip string,
+	status,
+	bytes int,
+	start,
+	end time.Time) {
+	// latency := end.Sub(start)
+	//
+	// sp.GetTracer().TraceRequest(
+	// 	// this true is being ignored :)
+	// 	true,
+	// 	method,
+	// 	path,
+	// 	query,
+	// 	status,
+	// 	bytes,
+	// 	ip,
+	// 	agent,
+	// 	start,
+	// 	end,
+	// 	map[string]string{},
+	// )
+	// sp.GetLogger().Info(
+	// 	"Request",
+	// 	zap.Int("status", status),
+	// 	zap.String("method", method),
+	// 	zap.String("path", path),
+	// 	zap.String("query", query),
+	// 	zap.String("ip", ip),
+	// 	zap.String("userAgent", agent),
+	// 	zap.Time("mvts", end),
+	// 	zap.String("pmvts", end.Format("2006-01-02T15:04:05-0700")),
+	// 	zap.Duration("latency", latency),
+	// 	zap.String("pLatency", latency.String()),
+	// )
 }

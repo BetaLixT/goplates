@@ -7,7 +7,7 @@ require (
 	github.com/betalixt/gingorr v0.1.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/google/wire v0.5.0
-	github.com/soreing/trex v0.0.0-20220706162840-938fd7b7021e
+	github.com/soreing/trex v0.2.0
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.1
 	github.com/swaggo/swag v1.8.3
