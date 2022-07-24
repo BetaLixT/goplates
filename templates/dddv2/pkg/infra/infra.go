@@ -12,26 +12,29 @@ import (
 )
 
 var DependencySet = wire.NewSet(
-  insights.NewInsightsCore,
-  logger.NewLogger,
-  repos.NewForcastRepo,
-  wire.Bind(
-    new(forecast.IForecastRepository),
-    new(*repos.ForecastRepository),
-  ),
-  NewInfrastructure,
+	insights.NewInsightsCore,
+	logger.NewLoggerFactory,
+	repos.NewForcastRepo,
+	wire.Bind(
+		new(forecast.IForecastRepository),
+		new(*repos.ForecastRepository),
+	),
+	NewInfrastructure,
 )
 
 type Infrastructure struct {
-  insightsCore *appinsightstrace.AppInsightsCore
+	insightsCore  *appinsightstrace.AppInsightsCore
+	loggerFactory *logger.LoggerFactory
 }
 
 func NewInfrastructure(
-  insightsCore *appinsightstrace.AppInsightsCore,
+	insightsCore *appinsightstrace.AppInsightsCore,
+	loggerFactory *logger.LoggerFactory,
 ) *Infrastructure {
-  return &Infrastructure{
-    insightsCore: insightsCore,
-  }
+	return &Infrastructure{
+		insightsCore: insightsCore,
+		loggerFactory: loggerFactory,
+	}
 }
 
 func (infra *Infrastructure) Start() {
@@ -39,5 +42,6 @@ func (infra *Infrastructure) Start() {
 }
 
 func (infra *Infrastructure) Stop() {
-  infra.insightsCore.Close()
+	infra.insightsCore.Close()
+	infra.loggerFactory.Close()
 }

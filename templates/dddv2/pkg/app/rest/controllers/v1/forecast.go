@@ -23,8 +23,7 @@ type ForecastController struct {
 // @Success 200 {object} []res.ForecastDetailed{}
 // @Router /api/v1/forecasts/ [get]
 func (ctrl *ForecastController) listForecasts(ctx *gin.Context) {
-	sp := ctx.MustGet("tx-context").(forecast.IServiceProvider)
-	resbody := sp.GetForecastRepo().List()
+	resbody := ctrl.svc.ListForecasts(ctx)
 	ctx.JSON(200, res.MapForecastToDetailedSliceDto(resbody))
 }
 

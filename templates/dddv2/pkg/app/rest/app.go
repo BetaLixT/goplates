@@ -5,6 +5,7 @@ import (
 	v1 "ddd/pkg/app/rest/controllers/v1"
 	"ddd/pkg/domain"
 	"ddd/pkg/infra"
+	"ddd/pkg/standard"
 	"time"
 
 	"github.com/betalixt/gingorr"
@@ -58,14 +59,14 @@ func (a *app) startService() {
 
 	// - Setting up middlewares
 	router.Use(gingorr.RootRecoveryMiddleware(a.lgr))
-	// router.Use(trex.TxContextMiddleware(provFactory))
+	router.Use(trex.TxContextMiddleware(standard.TRACE_INFO_KEY))
 	router.Use(trex.RequestTracerMiddleware(traceRequest))
-	router.Use(gingorr.RecoveryMiddleware("tx-context", a.lgr))
+	router.Use(gingorr.RecoveryMiddleware(standard.TRACE_INFO_KEY, a.lgr))
 	router.GET(
 		"/swagger/*any",
 		ginSwagger.WrapHandler(swaggerFiles.Handler),
 	)
-	router.Use(gingorr.ErrorHandlerMiddleware("tx-context"))
+	router.Use(gingorr.ErrorHandlerMiddleware(standard.TRACE_INFO_KEY))
 
 	// - Setting up routes
 	router.GET("/", func(ctx *gin.Context) {
