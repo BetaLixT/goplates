@@ -18,10 +18,13 @@ import (
 // InitializeEvent creates an Event. It will error if the Event is staffed with
 // a grumpy greeter.
 func InitializeApp() (*app, error) {
-	zapLogger := logger.NewLogger()
+	loggerFactory, err := logger.NewLoggerFactory()
+	if err != nil {
+		return nil, err
+	}
 	forecastRepository := repos.NewForcastRepo()
 	forecastService := forecast.NewForecastService(forecastRepository)
 	forecastController := v1.NewForecastController(forecastService)
-	restApp := NewApp(zapLogger, forecastController)
+	restApp := NewApp(loggerFactory, forecastController)
 	return restApp, nil
 }

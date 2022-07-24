@@ -14,6 +14,8 @@ github.com/benbjohnson/clock v1.3.0 h1:ip6w0uFQkncKQ979AypyG0ER7mqUSBdKLOgAle/AT
 github.com/benbjohnson/clock v1.3.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
 github.com/betalixt/gingorr v0.1.0 h1:HmQqLK1e7NEhG75bUiMano8xONZLMugqF2cS6BwZ4BU=
 github.com/betalixt/gingorr v0.1.0/go.mod h1:nYwd6zqj7mSDE1vmhxywHZJNhonJDRInRBcFryMlIKk=
+github.com/betalixt/gingorr v0.2.0 h1:sEA3VMc5+3MFz0xKLHduY2E+01bUqmHhcwYCLG3Ig0U=
+github.com/betalixt/gingorr v0.2.0/go.mod h1:nYwd6zqj7mSDE1vmhxywHZJNhonJDRInRBcFryMlIKk=
 github.com/betalixt/gorr v0.2.1 h1:pzP+PaW9R33d5haMl6eqsg9qaHuRbgRVQGODnDRRwEM=
 github.com/betalixt/gorr v0.2.1/go.mod h1:+W0Hh34ZHm3GpI/CLjOJjXhsiZouz+PoCe/Hy/BhymQ=
 github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d/go.mod h1:maD7wRr/U5Z6m/iR4s+kqSMx2CaBsrgA7czyZG/E6dU=

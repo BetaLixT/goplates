@@ -5,6 +5,7 @@ import (
 	v1 "ddd/pkg/app/rest/controllers/v1"
 	"ddd/pkg/domain"
 	"ddd/pkg/infra"
+	"ddd/pkg/infra/logger"
 	"ddd/pkg/standard"
 	"time"
 
@@ -14,7 +15,6 @@ import (
 	"github.com/soreing/trex"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"go.uber.org/zap"
 )
 
 var dependencySet = wire.NewSet(
@@ -33,12 +33,12 @@ func Start() {
 }
 
 type app struct {
-	lgr     *zap.Logger
+	lgr     *logger.LoggerFactory
 	v1fcast *v1.ForecastController
 }
 
 func NewApp(
-	lgr *zap.Logger,
+	lgr *logger.LoggerFactory,
 	v1fcast *v1.ForecastController,
 ) *app {
 	return &app{
@@ -58,15 +58,16 @@ func (a *app) startService() {
 	// - Swagger
 
 	// - Setting up middlewares
-	router.Use(gingorr.RootRecoveryMiddleware(a.lgr))
+	baseLgr := a.lgr.NewLogger(nil)
+	router.Use(gingorr.RootRecoveryMiddleware(baseLgr))
 	router.Use(trex.TxContextMiddleware(standard.TRACE_INFO_KEY))
 	router.Use(trex.RequestTracerMiddleware(traceRequest))
-	router.Use(gingorr.RecoveryMiddleware(standard.TRACE_INFO_KEY, a.lgr))
+	router.Use(gingorr.RecoveryMiddleware(a.lgr, standard.TRACE_INFO_KEY))
 	router.GET(
 		"/swagger/*any",
 		ginSwagger.WrapHandler(swaggerFiles.Handler),
 	)
-	router.Use(gingorr.ErrorHandlerMiddleware(standard.TRACE_INFO_KEY))
+	router.Use(gingorr.ErrorHandlerMiddleware(a.lgr, standard.TRACE_INFO_KEY))
 
 	// - Setting up routes
 	router.GET("/", func(ctx *gin.Context) {

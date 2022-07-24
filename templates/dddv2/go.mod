@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/BetaLixT/appInsightsTrace v0.1.2
-	github.com/betalixt/gingorr v0.1.0
+	github.com/betalixt/gingorr v0.2.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/google/wire v0.5.0
 	github.com/soreing/trex v0.2.0
