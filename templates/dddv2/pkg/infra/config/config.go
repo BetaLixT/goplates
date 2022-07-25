@@ -2,6 +2,7 @@ package config
 
 import (
 	"ddd/pkg/infra/db"
+	"ddd/pkg/infra/rdb"
 
 	trace "github.com/BetaLixT/appInsightsTrace"
 )
@@ -16,5 +17,11 @@ func NewInsightsConfig() *trace.AppInsightsOptions {
 func NewDatabaseOptions() *db.Options {
   return &db.Options{
   	DatabaseServiceName: "main-database",
+  }
+}
+
+func NewRedisOptions() *rdb.Options {
+  return &rdb.Options{
+  	ServiceName: "main-cache",
   }
 }

@@ -8,9 +8,11 @@ import (
 	"ddd/pkg/infra/http"
 	"ddd/pkg/infra/insights"
 	"ddd/pkg/infra/logger"
+	"ddd/pkg/infra/rdb"
 	"ddd/pkg/infra/repos"
 
 	trace "github.com/BetaLixT/appInsightsTrace"
+	"github.com/BetaLixT/gotred/v8"
 	"github.com/BetaLixT/gottp"
 	"github.com/BetaLixT/tsqlx"
 	"github.com/google/wire"
@@ -36,6 +38,12 @@ var DependencySet = wire.NewSet(
 		new(gottp.ITracer),
 		new(*trace.AppInsightsCore),
 	),
+	config.NewRedisOptions,
+	wire.Bind(
+		new(gotred.ITracer),
+		new(*trace.AppInsightsCore),
+	),
+	rdb.NewRedisContext,
 	NewInfrastructure,
 )
 

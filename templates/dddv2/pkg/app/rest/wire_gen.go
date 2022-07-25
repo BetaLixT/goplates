@@ -14,6 +14,7 @@ import (
 	"ddd/pkg/infra/http"
 	"ddd/pkg/infra/insights"
 	"ddd/pkg/infra/logger"
+	"ddd/pkg/infra/rdb"
 	"ddd/pkg/infra/repos"
 )
 
@@ -34,7 +35,12 @@ func InitializeApp() (*app, error) {
 		return nil, err
 	}
 	httpClient := http.NewHttpClient(appInsightsCore)
-	forecastRepository := repos.NewForcastRepo(tracedDB, httpClient)
+	rdbOptions := config.NewRedisOptions()
+	client, err := rdb.NewRedisContext(rdbOptions, appInsightsCore)
+	if err != nil {
+		return nil, err
+	}
+	forecastRepository := repos.NewForcastRepo(tracedDB, httpClient, client)
 	forecastService := forecast.NewForecastService(forecastRepository)
 	forecastController := v1.NewForecastController(forecastService)
 	restApp := NewApp(loggerFactory, forecastController, appInsightsCore)
