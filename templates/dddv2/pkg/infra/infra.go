@@ -7,14 +7,16 @@ import (
 	"ddd/pkg/infra/insights"
 	"ddd/pkg/infra/logger"
 	"ddd/pkg/infra/repos"
+	"ddd/pkg/infra/config"
 
-	appinsightstrace "github.com/BetaLixT/appInsightsTrace"
+
+	trace "github.com/BetaLixT/appInsightsTrace"
 	"github.com/BetaLixT/tsqlx"
 	"github.com/google/wire"
 )
 
 var DependencySet = wire.NewSet(
-	insights.NewInsightsCore,
+	insights.NewInsights,
 	logger.NewLoggerFactory,
 	repos.NewForcastRepo,
 	wire.Bind(
@@ -25,18 +27,18 @@ var DependencySet = wire.NewSet(
 	db.NewDatabaseContext,
 	wire.Bind(
 		new(tsqlx.ITracer),
-		new(*),
+		new(*trace.AppInsightsCore),
 	),
 	NewInfrastructure,
 )
 
 type Infrastructure struct {
-	insightsCore  *appinsightstrace.AppInsightsCore
+	insightsCore  *trace.AppInsightsCore
 	loggerFactory *logger.LoggerFactory
 }
 
 func NewInfrastructure(
-	insightsCore *appinsightstrace.AppInsightsCore,
+	insightsCore *trace.AppInsightsCore,
 	loggerFactory *logger.LoggerFactory,
 ) *Infrastructure {
 	return &Infrastructure{

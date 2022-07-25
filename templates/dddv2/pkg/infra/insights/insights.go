@@ -5,9 +5,13 @@ import (
 	"go.uber.org/zap"
 )
 
-func NewInsightsCore(
+func NewInsights(
   optn *trace.AppInsightsOptions, 
   lgr *zap.Logger,
 ) *trace.AppInsightsCore {
-  return trace.NewAppInsightsCore(optn, lgr)
+  return trace.NewAppInsightsCore(
+  	optn,
+  	&traceExtractor{},
+  	lgr,
+  )
 }
