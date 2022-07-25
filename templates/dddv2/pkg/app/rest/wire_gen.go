@@ -37,6 +37,6 @@ func InitializeApp() (*app, error) {
 	forecastRepository := repos.NewForcastRepo(tracedDB, httpClient)
 	forecastService := forecast.NewForecastService(forecastRepository)
 	forecastController := v1.NewForecastController(forecastService)
-	restApp := NewApp(loggerFactory, forecastController)
+	restApp := NewApp(loggerFactory, forecastController, appInsightsCore)
 	return restApp, nil
 }

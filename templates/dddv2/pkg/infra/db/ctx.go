@@ -3,6 +3,8 @@ package db
 import (
 	"github.com/BetaLixT/tsqlx"
 	"github.com/jmoiron/sqlx"
+	
+  _ "github.com/lib/pq"
 )
 
 func NewDatabaseContext(

@@ -9,12 +9,14 @@ import (
 	"ddd/pkg/standard"
 	"time"
 
+	trace "github.com/BetaLixT/appInsightsTrace"
 	"github.com/betalixt/gingorr"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	"github.com/soreing/trex"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"go.uber.org/zap"
 )
 
 var dependencySet = wire.NewSet(
@@ -33,17 +35,20 @@ func Start() {
 }
 
 type app struct {
-	lgr     *logger.LoggerFactory
-	v1fcast *v1.ForecastController
+	lgr      *logger.LoggerFactory
+	v1fcast  *v1.ForecastController
+	insights *trace.AppInsightsCore
 }
 
 func NewApp(
 	lgr *logger.LoggerFactory,
 	v1fcast *v1.ForecastController,
+	insights *trace.AppInsightsCore,
 ) *app {
 	return &app{
-		lgr:     lgr,
-		v1fcast: v1fcast,
+		lgr:      lgr,
+		v1fcast:  v1fcast,
+		insights: insights,
 	}
 }
 
@@ -61,7 +66,7 @@ func (a *app) startService() {
 	baseLgr := a.lgr.NewLogger(nil)
 	router.Use(gingorr.RootRecoveryMiddleware(baseLgr))
 	router.Use(trex.TxContextMiddleware(standard.TRACE_INFO_KEY))
-	router.Use(trex.RequestTracerMiddleware(traceRequest))
+	router.Use(trex.RequestTracerMiddleware(a.traceRequest))
 	router.Use(gingorr.RecoveryMiddleware(a.lgr, standard.TRACE_INFO_KEY))
 	router.GET(
 		"/swagger/*any",
@@ -85,7 +90,7 @@ func (a *app) startService() {
 	router.Run(":8080")
 }
 
-func traceRequest(
+func (a *app) traceRequest(
 	context context.Context,
 	method,
 	path,
@@ -96,33 +101,33 @@ func traceRequest(
 	bytes int,
 	start,
 	end time.Time) {
-	// latency := end.Sub(start)
-	//
-	// sp.GetTracer().TraceRequest(
-	// 	// this true is being ignored :)
-	// 	true,
-	// 	method,
-	// 	path,
-	// 	query,
-	// 	status,
-	// 	bytes,
-	// 	ip,
-	// 	agent,
-	// 	start,
-	// 	end,
-	// 	map[string]string{},
-	// )
-	// sp.GetLogger().Info(
-	// 	"Request",
-	// 	zap.Int("status", status),
-	// 	zap.String("method", method),
-	// 	zap.String("path", path),
-	// 	zap.String("query", query),
-	// 	zap.String("ip", ip),
-	// 	zap.String("userAgent", agent),
-	// 	zap.Time("mvts", end),
-	// 	zap.String("pmvts", end.Format("2006-01-02T15:04:05-0700")),
-	// 	zap.Duration("latency", latency),
-	// 	zap.String("pLatency", latency.String()),
-	// )
+	latency := end.Sub(start)
+
+	lgr := a.lgr.NewLogger(context)
+	a.insights.TraceRequest(
+		context,
+		method,
+		path,
+		query,
+		status,
+		bytes,
+		ip,
+		agent,
+		start,
+		end,
+		map[string]string{},
+	)
+	lgr.Info(
+		"Request",
+		zap.Int("status", status),
+		zap.String("method", method),
+		zap.String("path", path),
+		zap.String("query", query),
+		zap.String("ip", ip),
+		zap.String("userAgent", agent),
+		zap.Time("mvts", end),
+		zap.String("pmvts", end.Format("2006-01-02T15:04:05-0700")),
+		zap.Duration("latency", latency),
+		zap.String("pLatency", latency.String()),
+	)
 }
