@@ -4,6 +4,9 @@ import (
 	"context"
 	"ddd/pkg/domain/forecast"
 	"time"
+
+	"github.com/BetaLixT/gottp"
+	"github.com/BetaLixT/tsqlx"
 )
 
 type ForecastRepository struct {
@@ -39,6 +42,9 @@ func Ptr[T any](v T) *T {
   return &v
 }
 
-func NewForcastRepo() *ForecastRepository {
+func NewForcastRepo(
+	dbctx *tsqlx.TracedDB,
+	gottp *gottp.HttpClient,
+) *ForecastRepository {
   return &ForecastRepository{}
 }

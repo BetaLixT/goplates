@@ -1,14 +1,16 @@
 package insights
 
 import (
+	"ddd/pkg/infra/logger"
+
 	trace "github.com/BetaLixT/appInsightsTrace"
-	"go.uber.org/zap"
 )
 
 func NewInsights(
   optn *trace.AppInsightsOptions, 
-  lgr *zap.Logger,
+  lgrf *logger.LoggerFactory,
 ) *trace.AppInsightsCore {
+	lgr := lgrf.NewLogger(nil)
   return trace.NewAppInsightsCore(
   	optn,
   	&traceExtractor{},

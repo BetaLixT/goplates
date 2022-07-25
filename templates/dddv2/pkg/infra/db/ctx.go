@@ -7,7 +7,7 @@ import (
 
 func NewDatabaseContext(
   tracer tsqlx.ITracer,
-  optn Options,
+  optn *Options,
 ) (*tsqlx.TracedDB, error) {
   db, err := sqlx.Open("postgres", optn.ConnectionString)
 	if err != nil {

@@ -9,6 +9,10 @@ package rest
 import (
 	"ddd/pkg/app/rest/controllers/v1"
 	"ddd/pkg/domain/forecast"
+	"ddd/pkg/infra/config"
+	"ddd/pkg/infra/db"
+	"ddd/pkg/infra/http"
+	"ddd/pkg/infra/insights"
 	"ddd/pkg/infra/logger"
 	"ddd/pkg/infra/repos"
 )
@@ -22,7 +26,15 @@ func InitializeApp() (*app, error) {
 	if err != nil {
 		return nil, err
 	}
-	forecastRepository := repos.NewForcastRepo()
+	appInsightsOptions := config.NewInsightsConfig()
+	appInsightsCore := insights.NewInsights(appInsightsOptions, loggerFactory)
+	options := config.NewDatabaseOptions()
+	tracedDB, err := db.NewDatabaseContext(appInsightsCore, options)
+	if err != nil {
+		return nil, err
+	}
+	httpClient := http.NewHttpClient(appInsightsCore)
+	forecastRepository := repos.NewForcastRepo(tracedDB, httpClient)
 	forecastService := forecast.NewForecastService(forecastRepository)
 	forecastController := v1.NewForecastController(forecastService)
 	restApp := NewApp(loggerFactory, forecastController)
